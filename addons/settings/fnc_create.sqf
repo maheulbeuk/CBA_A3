@@ -58,7 +58,10 @@ if (_displayName isEqualTo "") then {
     _displayName = _setting;
 };
 
-private ["_defaultValue", "_values", "_valueNames", "_trailingDecimals"];
+private "_defaultValue";
+private _values = [];
+private _valueNames = [];
+private _trailingDecimals = 0;
 
 switch (toUpper _settingType) do {
     case ("BOOLEAN"): {
@@ -100,50 +103,52 @@ switch (toUpper _settingType) do {
 
 if (isNil "_defaultValue") exitWith {false};
 
-GVAR(defaultSettings) setVariable [_setting, [_defaultValue, _addon, _settingType, _values, _valueNames, _displayName, _tooltip, _trailingDecimals]];
-GVAR(allSettings) pushBackUnique _setting;
+{
+    GVAR(defaultSettings) setVariable [_setting, [_defaultValue, _addon, _settingType, _values, _valueNames, _displayName, _tooltip, _trailingDecimals]];
+    GVAR(allSettings) pushBackUnique _setting;
 
-// read previous setting values from profile
-(profileNamespace getVariable [QGVAR(profileSettings), []]) params [["_profileSettings", []], ["_profileValues", []], ["_profileForced", []]];
+    // read previous setting values from profile
+    (profileNamespace getVariable [QGVAR(profileSettings), []]) params [["_profileSettings", []], ["_profileValues", []], ["_profileForced", []]];
 
-private _index = (_profileSettings apply {toLower _x}) find toLower _setting;
+    private _index = (_profileSettings apply {toLower _x}) find toLower _setting;
 
-if (_index != -1) then {
-    private _value = _profileValues param [_index];
-    private _forced = _profileForced param [_index, false];
+    if (_index != -1) then {
+        private _value = _profileValues param [_index];
+        private _forced = _profileForced param [_index, false];
 
-    if !([_setting, _value] call FUNC(check)) then {
-        _value = [_setting, "default"] call FUNC(get);
+        if !([_setting, _value] call FUNC(check)) then {
+            _value = [_setting, "default"] call FUNC(get);
 
-        [_setting, _value, _forced, "client"] call FUNC(set);
-        diag_log text format ["[CBA] (settings): Invalid value for setting %1. Fall back to default value.", str _setting];
+            [_setting, _value, _forced, "client"] call FUNC(set);
+            diag_log text format ["[CBA] (settings): Invalid value for setting %1. Fall back to default value.", str _setting];
+        };
+
+        GVAR(clientSettings) setVariable [_setting, [_value, _forced]];
+        if (isServer && {isMultiplayer}) then {
+            GVAR(serverSettings) setVariable [_setting, [_value, _forced], true];
+        };
     };
 
-    GVAR(clientSettings) setVariable [_setting, [_value, _forced]];
-    if (isServer && {isMultiplayer}) then {
-        GVAR(serverSettings) setVariable [_setting, [_value, _forced], true];
+    private _missionSettingsVar = missionNamespace getVariable [QGVAR(3denSettings), "Scenario" get3DENMissionAttribute QGVAR(missionSettings)];
+    _missionSettingsVar params [["_missionSettings", []], ["_missionValues", []], ["_missionForced", []]];
+
+    _index = (_missionSettings apply {toLower _x}) find toLower _setting;
+
+    if (_index != -1) then {
+        private _value = _missionValues param [_index];
+        private _forced = _missionForced param [_index, false];
+
+        if !([_setting, _value] call FUNC(check)) then {
+            GVAR(missionSettings) setVariable [_setting, [_value, _forced]];
+        };
     };
-};
 
-private _missionSettingsVar = missionNamespace getVariable [QGVAR(3denSettings), "Scenario" get3DENMissionAttribute QGVAR(missionSettings)];
-_missionSettingsVar params [["_missionSettings", []], ["_missionValues", []], ["_missionForced", []]];
-
-_index = (_missionSettings apply {toLower _x}) find toLower _setting;
-
-if (_index != -1) then {
-    private _value = _missionValues param [_index];
-    private _forced = _missionForced param [_index, false];
-
-    if !([_setting, _value] call FUNC(check)) then {
-        GVAR(missionSettings) setVariable [_setting, [_value, _forced]];
+    // refresh
+    if (isServer) then {
+        [QGVAR(refreshSetting), _setting] call CBA_fnc_globalEvent;
+    } else {
+        [QGVAR(refreshSetting), _setting] call CBA_fnc_localEvent;  
     };
-};
-
-// refresh
-if (isServer) then {
-    [QGVAR(refreshSetting), _setting] call CBA_fnc_globalEvent;
-} else {
-    [QGVAR(refreshSetting), _setting] call CBA_fnc_localEvent;  
-};
+} call CBA_fnc_directCall;
 
 true

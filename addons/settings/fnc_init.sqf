@@ -137,7 +137,7 @@ if (isNil QGVAR(missionSettings)) then {
                 private _value = _missionValues param [_forEachIndex];
                 private _forced = _missionForced param [_forEachIndex, false];
 
-                if (!isNil {GVAR(defaultSettings) getVariable _setting} && [_setting, _value] call FUNC(check)) then {
+                if (!isNil {GVAR(defaultSettings) getVariable _setting} && {[_setting, _value] call FUNC(check)}) then {
                     GVAR(missionSettings) setVariable [_setting, [_value, _forced]];
                 };
             } forEach _missionSettings;

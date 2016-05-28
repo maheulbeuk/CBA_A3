@@ -27,7 +27,8 @@ switch (toLower _source) do {
     case ("server"): {
         if (isServer) then {
             GVAR(serverSettings) call (uiNamespace getVariable "CBA_fnc_deleteNamespace");
-            GVAR(serverSettings) = [] call (uiNamespace getVariable "CBA_fnc_createNamespace");
+            GVAR(serverSettings) = isMultiplayer call (uiNamespace getVariable "CBA_fnc_createNamespace");
+            publicVariable QGVAR(serverSettings);
         };
     };
     case ("mission"): {

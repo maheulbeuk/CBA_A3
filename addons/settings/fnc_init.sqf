@@ -97,31 +97,37 @@ if (isNil QGVAR(clientSettings)) then {
     } forEach _clientSettings;
 };
 
-if (isNil QGVAR(serverSettings) && {isServer && {isMultiplayer}}) then {
-    // retrieve client settings from profile
-    GVAR(serverSettings) = true call (uiNamespace getVariable "CBA_fnc_createNamespace");
+if (isNil QGVAR(serverSettings) && {isServer}) then {
+    if (isMultiplayer) then {
+        // retrieve client settings from profile
+        GVAR(serverSettings) = true call (uiNamespace getVariable "CBA_fnc_createNamespace");
+        publicVariable QGVAR(serverSettings);
 
-    (profileNamespace getVariable [QGVAR(profileSettings), []]) params [["_serverSettings", []], ["_serverValues", []], ["_serverForced", []]];
+        (profileNamespace getVariable [QGVAR(profileSettings), []]) params [["_serverSettings", []], ["_serverValues", []], ["_serverForced", []]];
 
-    {
-        private _setting = _x;
-        private _value = _serverValues param [_forEachIndex];
-        private _forced = _serverForced param [_forEachIndex, false];
+        {
+            private _setting = _x;
+            private _value = _serverValues param [_forEachIndex];
+            private _forced = _serverForced param [_forEachIndex, false];
 
-        if (!isNil {GVAR(defaultSettings) getVariable _setting} && {[_setting, _value] call FUNC(check)}) then {
-            GVAR(serverSettings) setVariable [_setting, [_value, _forced], true];
-        };
-    } forEach _serverSettings;
+            if (!isNil {GVAR(defaultSettings) getVariable _setting} && {[_setting, _value] call FUNC(check)}) then {
+                GVAR(serverSettings) setVariable [_setting, [_value, _forced], true];
+            };
+        } forEach _serverSettings;
+    } else {
+        GVAR(serverSettings) = [] call (uiNamespace getVariable "CBA_fnc_createNamespace");
+    };
 };
 
-// delay a frame, because "get3DENMissionAttribute" (and "is3DEN") are not working on preInit when
-// returning from a preview (they do when entering the editor from the main menu though)
-// use spawn-directCall, because CBA_fnc_execNextFrame stalls until after postInit
-0 spawn {
-    {
-        if (isNil QGVAR(missionSettings)) then {
-            // retrieve mission settings from 3den mission
-            GVAR(missionSettings) = [] call (uiNamespace getVariable "CBA_fnc_createNamespace");
+if (isNil QGVAR(missionSettings)) then {
+    // retrieve mission settings from 3den mission
+    GVAR(missionSettings) = [] call (uiNamespace getVariable "CBA_fnc_createNamespace");
+
+    // delay a frame, because "get3DENMissionAttribute" (and "is3DEN") are not working on preInit when
+    // returning from a preview (they do when entering the editor from the main menu though)
+    // use spawn-directCall, because CBA_fnc_execNextFrame stalls until after postInit
+    0 spawn {
+        {
 
             private _missionSettingsVar = missionNamespace getVariable [QGVAR(3denSettings), "Scenario" get3DENMissionAttribute QGVAR(missionSettings)];
             _missionSettingsVar params [["_missionSettings", []], ["_missionValues", []], ["_missionForced", []]];
@@ -135,14 +141,14 @@ if (isNil QGVAR(serverSettings) && {isServer && {isMultiplayer}}) then {
                     GVAR(missionSettings) setVariable [_setting, [_value, _forced]];
                 };
             } forEach _missionSettings;
-        };
 
-        // set local values now, but don't do events. this is so these don't remain undefined
-        {
-            private _setting = _x;
-            private _value = _setting call FUNC(get);
+            // set local values now, but don't do events. this is so these don't remain undefined
+            {
+                private _setting = _x;
+                private _value = _setting call FUNC(get);
 
-            missionNamespace setVariable [_setting, _value];
-        } forEach GVAR(allSettings);
-    } call (uiNamespace getVariable "CBA_fnc_directCall");
+                missionNamespace setVariable [_setting, _value];
+            } forEach GVAR(allSettings);
+        } call (uiNamespace getVariable "CBA_fnc_directCall");
+    };
 };

@@ -138,7 +138,7 @@ if (isNil "_defaultValue") exitWith {false};
         private _value = _missionValues param [_index];
         private _forced = _missionForced param [_index, false];
 
-        if !([_setting, _value] call FUNC(check)) then {
+        if ([_setting, _value] call FUNC(check)) then {
             GVAR(missionSettings) setVariable [_setting, [_value, _forced]];
         };
     };

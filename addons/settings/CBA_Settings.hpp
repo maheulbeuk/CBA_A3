@@ -11,7 +11,7 @@ class CBA_Setting_List_base {
     displayName = "";
     tooltip = "";
     values[] = {0,1};
-    //valueNames[] = {"disabled","enabled"};
+    //labels[] = {"disabled","enabled"};
     defaultIndex = 0;
 };
 

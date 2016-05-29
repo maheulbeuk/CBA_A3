@@ -60,7 +60,7 @@ if (_displayName isEqualTo "") then {
 
 private "_defaultValue";
 private _values = [];
-private _valueNames = [];
+private _labels = [];
 private _trailingDecimals = 0;
 
 switch (toUpper _settingType) do {
@@ -70,10 +70,10 @@ switch (toUpper _settingType) do {
     };
     case ("LIST"): {
         _values = _valueInfo param [0, [], [[]]];
-        _valueNames = _valueInfo param [1, [], [[]]];
+        _labels = _valueInfo param [1, [], [[]]];
         private _defaultIndex = _valueInfo param [2, 0, [0]];
 
-        _valueNames resize count _values;
+        _labels resize count _values;
         {
             if (isNil "_x") then { _x = _values select _forEachIndex };
             if !(_x isEqualType "") then { _x = str _x };
@@ -81,8 +81,8 @@ switch (toUpper _settingType) do {
                 _x = _x select [1];
                 if (isLocalized _x) then { _x = localize _x };
             };
-            _valueNames set [_forEachIndex, _x];
-        } forEach _valueNames;
+            _labels set [_forEachIndex, _x];
+        } forEach _labels;
 
         _defaultValue = _values param [_defaultIndex, 0];
     };
@@ -104,7 +104,7 @@ switch (toUpper _settingType) do {
 if (isNil "_defaultValue") exitWith {false};
 
 {
-    GVAR(defaultSettings) setVariable [_setting, [_defaultValue, _addon, _settingType, _values, _valueNames, _displayName, _tooltip, _trailingDecimals]];
+    GVAR(defaultSettings) setVariable [_setting, [_defaultValue, _addon, _settingType, _values, _labels, _displayName, _tooltip, _trailingDecimals]];
     //GVAR(allSettings) pushBackUnique _setting;
     if !(_setting in GVAR(allSettings)) then {GVAR(allSettings) pushBack _setting};
 

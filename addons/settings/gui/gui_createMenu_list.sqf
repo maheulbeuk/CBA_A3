@@ -12,7 +12,7 @@ _ctrlSetting ctrlCommit 0;
 private _data = [];
 
 {
-    private _index = _ctrlSetting lbAdd (_valueNames select _forEachIndex);
+    private _index = _ctrlSetting lbAdd (_labels select _forEachIndex);
     _ctrlSetting lbSetData [_index, str _index];
     _data set [_index, _x];
 } forEach _values;

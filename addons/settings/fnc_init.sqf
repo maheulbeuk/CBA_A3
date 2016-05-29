@@ -33,7 +33,7 @@ if (isNil QGVAR(defaultSettings)) then {
                 _displayName = _setting;
             };
 
-            private ["_defaultValue", "_values", "_valueNames", "_trailingDecimals"];
+            private ["_defaultValue", "_values", "_labels", "_trailingDecimals"];
 
             switch (toUpper _settingType) do {
             case ("BOOLEAN"): {
@@ -42,8 +42,8 @@ if (isNil QGVAR(defaultSettings)) then {
             };
             case ("LIST"): {
                 _values = getArray (_x >> "values");
-                _valueNames = getArray (_x >> "valueNames");
-                _valueNames resize count _values;
+                _labels = getArray (_x >> "labels");
+                _labels resize count _values;
                 {
                     if (isNil "_x") then { _x = _values select _forEachIndex };
                     if !(_x isEqualType "") then { _x = str _x };
@@ -51,8 +51,8 @@ if (isNil QGVAR(defaultSettings)) then {
                         _x = _x select [1];
                         if (isLocalized _x) then { _x = localize _x };
                     };
-                    _valueNames set [_forEachIndex, _x];
-                } forEach _valueNames;
+                    _labels set [_forEachIndex, _x];
+                } forEach _labels;
 
                 _defaultValue = _values param [getNumber (_x >> "defaultIndex"), 0];
             };
@@ -67,7 +67,7 @@ if (isNil QGVAR(defaultSettings)) then {
             default {};
             };
 
-            GVAR(defaultSettings) setVariable [_setting, [_defaultValue, _addon, _settingType, _values, _valueNames, _displayName, _tooltip, _trailingDecimals]];
+            GVAR(defaultSettings) setVariable [_setting, [_defaultValue, _addon, _settingType, _values, _labels, _displayName, _tooltip, _trailingDecimals]];
             GVAR(allSettings) pushBack _setting;
         } forEach ("true" configClasses _x);
     } forEach ("true" configClasses (configFile >> "CBA_Settings"));

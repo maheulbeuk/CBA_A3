@@ -20,7 +20,7 @@ params [["_setting", "", [""]], ["_source", "client", [""]]];
 
 switch (toLower _source) do {
     case ("client"): {
-        true //[GVAR(clientSettings) getVariable _setting] param [0, []] param [1, false]
+        [GVAR(clientSettings) getVariable _setting] param [0, []] param [1, false]
     };
     case ("server"): {
         [GVAR(serverSettings) getVariable _setting] param [0, []] param [1, false]

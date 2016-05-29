@@ -37,13 +37,15 @@ private _value = switch (toLower _source) do {
         (GVAR(defaultSettings) getVariable _setting) param [0]
     };
     case ("forced"): {
-        private "_value";
+        private _value = [_setting, "client"] call FUNC(get);
 
-        {
-            if ([_setting, _x] call FUNC(isForced)) exitWith {
-                _value = [_setting, _x] call FUNC(get);
-            };
-        } forEach ["server", "mission", "client"];
+        if ([_setting, "server"] call FUNC(isForced)) exitWith {
+            _value = [_setting, "server"] call FUNC(get);
+        };
+
+        if ([_setting, "mission"] call FUNC(isForced)) exitWith {
+            _value = [_setting, "mission"] call FUNC(get);
+        };
 
         if (isNil "_value") then {nil} else {_value};
     };

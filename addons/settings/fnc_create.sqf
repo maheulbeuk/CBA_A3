@@ -105,7 +105,8 @@ if (isNil "_defaultValue") exitWith {false};
 
 {
     GVAR(defaultSettings) setVariable [_setting, [_defaultValue, _addon, _settingType, _values, _valueNames, _displayName, _tooltip, _trailingDecimals]];
-    GVAR(allSettings) pushBackUnique _setting;
+    //GVAR(allSettings) pushBackUnique _setting;
+    if !(_setting in GVAR(allSettings)) then {GVAR(allSettings) pushBack _setting};
 
     // read previous setting values from profile
     (profileNamespace getVariable [QGVAR(profileSettings), []]) params [["_profileSettings", []], ["_profileValues", []], ["_profileForced", []]];

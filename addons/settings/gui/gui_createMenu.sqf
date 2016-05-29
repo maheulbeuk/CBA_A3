@@ -13,7 +13,8 @@ uiNamespace setVariable [QGVAR(offsets), []];
     (GVAR(defaultSettings) getVariable _setting) params ["_defaultValue", "_addon", "_settingType", "_values", "_valueNames", "_displayName", "_tooltip", "_trailingDecimals"];
 
     private _addon = toLower _addon;
-    _addons pushBackUnique _addon;
+    //_addons pushBackUnique _addon;
+    if !(_addon in _addons) then {_addons pushBack _addon};
 
     {
         private _source = toLower _x;

@@ -66,4 +66,8 @@
         <English>Setting is overwritten. Check 'Server' or 'Mission' tab.</English>
         <German>Einstellung ist überschrieben. Überprüfe 'Server' oder 'Mission'-Reiter.</German>
     </Key>
+    <Key ID="STR_cba_settings_shortcut">
+        <English>Game Options (Addons)</English>
+        <German>Optionen (Modifikationen)</German>
+    </Key>
 </Package>

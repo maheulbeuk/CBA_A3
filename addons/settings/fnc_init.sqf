@@ -19,6 +19,7 @@ if (isNil QGVAR(defaultSettings)) then {
     // settings can be set in the main menu. have to use ui namespace copies of the functions
     GVAR(defaultSettings) = [] call (uiNamespace getVariable "CBA_fnc_createNamespace");
     GVAR(allSettings) = []; // same as allVariables GVAR(defaultSettings), but case sensitive
+    GVAR(serverOnlySettings) = [];
 
     {
         private _addon = configName _x;
@@ -28,6 +29,11 @@ if (isNil QGVAR(defaultSettings)) then {
             private _settingType = getText (_x >> "type");
             private _displayName = getText (_x >> "displayName");
             private _tooltip = getText (_x >> "tooltip");
+            private _serverOnly = getNumber (_x >> "serverOnly") == 1;
+
+            if (_serverOnly) then {
+                GVAR(serverOnlySettings) pushBack toLower _setting;
+            };
 
             if (_displayName isEqualTo "") then {
                 _displayName = _setting;

@@ -99,7 +99,7 @@ uiNamespace setVariable [QGVAR(offsets), []];
         };
 
         uiNamespace setVariable [OFFSETY(_addon,_source), _offsetY + 1.4];
-    } forEach ["client", "server", "mission"];
+    } forEach ([["client", "server", "mission"], ["server"]] select (toLower _setting in GVAR(serverOnlySettings)));
 } forEach GVAR(allSettings);
 
 uiNamespace setVariable [QGVAR(lists), _lists];

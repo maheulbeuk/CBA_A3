@@ -110,7 +110,8 @@ if (isNil "_defaultValue") exitWith {false};
     // read previous setting values from profile
     (profileNamespace getVariable [QGVAR(profileSettings), []]) params [["_profileSettings", []], ["_profileValues", []], ["_profileForced", []]];
 
-    private _index = (_profileSettings apply {toLower _x}) find toLower _setting;
+    //private _index = (_profileSettings apply {toLower _x}) find toLower _setting;
+    private _index = ([_profileSettings, {toLower _x}] call CBA_fnc_filter) find toLower _setting;
 
     if (_index != -1) then {
         private _value = _profileValues param [_index];
@@ -132,7 +133,8 @@ if (isNil "_defaultValue") exitWith {false};
     private _missionSettingsVar = missionNamespace getVariable [QGVAR(3denSettings), "Scenario" get3DENMissionAttribute QGVAR(missionSettings)];
     _missionSettingsVar params [["_missionSettings", []], ["_missionValues", []], ["_missionForced", []]];
 
-    _index = (_missionSettings apply {toLower _x}) find toLower _setting;
+    //_index = (_missionSettings apply {toLower _x}) find toLower _setting;
+    _index = ([_missionSettings, {toLower _x}] call CBA_fnc_filter) find toLower _setting;
 
     if (_index != -1) then {
         private _value = _missionValues param [_index];

@@ -10,7 +10,7 @@ uiNamespace setVariable [QGVAR(offsets), []];
 
 {
     private _setting = _x;
-    (GVAR(defaultSettings) getVariable _setting) params ["_defaultValue", "_addon", "_settingType", "_values", "_labels", "_displayName", "_tooltip", "_trailingDecimals"];
+    (GVAR(defaultSettings) getVariable _setting) params ["_defaultValue", "_addon", "_settingType", "_values", "_labels", "_displayName", "_tooltip", "_trailingDecimals", "_enabledFor"];
 
     private _addon = toLower _addon;
     //_addons pushBackUnique _addon;
@@ -99,7 +99,7 @@ uiNamespace setVariable [QGVAR(offsets), []];
         };
 
         uiNamespace setVariable [OFFSETY(_addon,_source), _offsetY + 1.4];
-    } forEach ([["client", "server", "mission"], ["server"]] select (toLower _setting in GVAR(serverOnlySettings)));
+    } forEach _enabledFor;
 } forEach GVAR(allSettings);
 
 uiNamespace setVariable [QGVAR(lists), _lists];

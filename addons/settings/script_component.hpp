@@ -53,3 +53,7 @@
 #define GET_TEMP_NAMESPACE(source) ([ARR_3(GVAR(clientSettingsTemp),GVAR(serverSettingsTemp),GVAR(missionSettingsTemp))] param [[ARR_3('client','server','mission')] find toLower source])
 #define SET_TEMP_NAMESPACE_VALUE(setting,value,source)   GET_TEMP_NAMESPACE(source) setVariable [ARR_2(setting,[ARR_2(value,(GET_TEMP_NAMESPACE(source) getVariable setting) param [1])])]
 #define SET_TEMP_NAMESPACE_FORCED(setting,forced,source) GET_TEMP_NAMESPACE(source) setVariable [ARR_2(setting,[ARR_2((GET_TEMP_NAMESPACE(source) getVariable setting) param [0],forced)])]
+
+#define CLIENT_SETTING 1
+#define SERVER_SERVER 2
+#define MISSION_SERVER 4

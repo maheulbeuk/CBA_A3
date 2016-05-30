@@ -19,7 +19,6 @@ if (isNil QGVAR(defaultSettings)) then {
     // settings can be set in the main menu. have to use ui namespace copies of the functions
     GVAR(defaultSettings) = [] call (uiNamespace getVariable "CBA_fnc_createNamespace");
     GVAR(allSettings) = []; // same as allVariables GVAR(defaultSettings), but case sensitive
-    GVAR(serverOnlySettings) = [];
 
     {
         private _addon = configName _x;
@@ -29,11 +28,7 @@ if (isNil QGVAR(defaultSettings)) then {
             private _settingType = getText (_x >> "type");
             private _displayName = getText (_x >> "displayName");
             private _tooltip = getText (_x >> "tooltip");
-            private _serverOnly = getNumber (_x >> "serverOnly") == 1;
-
-            if (_serverOnly) then {
-                GVAR(serverOnlySettings) pushBack toLower _setting;
-            };
+            private _enabledFor = getNumber (_x >> "enabledFor");
 
             if (_displayName isEqualTo "") then {
                 _displayName = _setting;
@@ -73,7 +68,11 @@ if (isNil QGVAR(defaultSettings)) then {
             default {};
             };
 
-            GVAR(defaultSettings) setVariable [_setting, [_defaultValue, _addon, _settingType, _values, _labels, _displayName, _tooltip, _trailingDecimals]];
+            _enabledFor = _enabledFor call (uiNamespace getVariable "BIS_fnc_decodeFlags") apply {
+                ["client", "server", "mission"] param [[CLIENT_SETTING, SERVER_SERVER, MISSION_SERVER] find _x];
+            } select {!isNil "_x"};
+
+            GVAR(defaultSettings) setVariable [_setting, [_defaultValue, _addon, _settingType, _values, _labels, _displayName, _tooltip, _trailingDecimals, _enabledFor arrayIntersect _enabledFor]];
             GVAR(allSettings) pushBack _setting;
         } forEach ("true" configClasses _x);
     } forEach ("true" configClasses (configFile >> "CBA_Settings"));

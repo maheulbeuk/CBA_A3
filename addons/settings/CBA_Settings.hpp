@@ -4,6 +4,7 @@ class CBA_Setting_Boolean_base {
     displayName = "";
     tooltip = "";
     defaultValue = 0;
+    enabledFor = CLIENT_SETTING + SERVER_SERVER + MISSION_SERVER;
 };
 
 class CBA_Setting_List_base {
@@ -13,6 +14,7 @@ class CBA_Setting_List_base {
     values[] = {0,1};
     //labels[] = {"disabled","enabled"};
     defaultIndex = 0;
+    enabledFor = CLIENT_SETTING + SERVER_SERVER + MISSION_SERVER;
 };
 
 class CBA_Setting_Slider_base {
@@ -22,6 +24,7 @@ class CBA_Setting_Slider_base {
     min = 0;
     max = 100;
     defaultValue = 50;
+    enabledFor = CLIENT_SETTING + SERVER_SERVER + MISSION_SERVER;
 };
 
 class CBA_Setting_Slider_2_base: CBA_Setting_Slider_base {
@@ -29,6 +32,7 @@ class CBA_Setting_Slider_2_base: CBA_Setting_Slider_base {
     max = 1;
     defaultValue = 0.5;
     trailingDecimals = 2;
+    enabledFor = CLIENT_SETTING + SERVER_SERVER + MISSION_SERVER;
 };
 
 class CBA_Setting_Color_base {
@@ -36,6 +40,7 @@ class CBA_Setting_Color_base {
     displayName = "";
     tooltip = "";
     defaultValue[] = {1,1,1};
+    enabledFor = CLIENT_SETTING + SERVER_SERVER + MISSION_SERVER;
 };
 
 class CBA_Setting_Color_Alpha_base: CBA_Setting_Color_base {

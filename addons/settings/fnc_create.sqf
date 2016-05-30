@@ -62,6 +62,7 @@ private "_defaultValue";
 private _values = [];
 private _labels = [];
 private _trailingDecimals = 0;
+private _enabledFor = ["client", "server", "mission"];
 
 switch (toUpper _settingType) do {
     case ("BOOLEAN"): {
@@ -104,7 +105,7 @@ switch (toUpper _settingType) do {
 if (isNil "_defaultValue") exitWith {false};
 
 {
-    GVAR(defaultSettings) setVariable [_setting, [_defaultValue, _addon, _settingType, _values, _labels, _displayName, _tooltip, _trailingDecimals]];
+    GVAR(defaultSettings) setVariable [_setting, [_defaultValue, _addon, _settingType, _values, _labels, _displayName, _tooltip, _trailingDecimals, _enabledFor]];
     //GVAR(allSettings) pushBackUnique _setting;
     if !(_setting in GVAR(allSettings)) then {GVAR(allSettings) pushBack _setting};
 

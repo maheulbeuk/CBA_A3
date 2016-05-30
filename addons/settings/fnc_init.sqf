@@ -69,8 +69,8 @@ if (isNil QGVAR(defaultSettings)) then {
             };
 
             _enabledFor = _enabledFor call (uiNamespace getVariable "BIS_fnc_decodeFlags") apply {
-                ["client", "server", "mission"] param [[CLIENT_SETTING, SERVER_SERVER, MISSION_SERVER] find _x];
-            } select {!isNil "_x"};
+                ["client", "server", "mission"] param [_x, "client"];
+            };
 
             GVAR(defaultSettings) setVariable [_setting, [_defaultValue, _addon, _settingType, _values, _labels, _displayName, _tooltip, _trailingDecimals, _enabledFor arrayIntersect _enabledFor]];
             GVAR(allSettings) pushBack _setting;
